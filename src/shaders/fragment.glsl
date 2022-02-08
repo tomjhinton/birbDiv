@@ -423,17 +423,17 @@ vec2 brownConradyDistortion(in vec2 uv, in float k1, in float k2)
 void main(){
   float alpha = 1.;
   vec2 uv = (gl_FragCoord.xy - uResolution * .5) / uResolution.yy ;
-  uv = vUv;
+  vec2 uv2 = vUv;
 
 
   // uvRipple(uv, 3.);
 
 
-  vec3 color = vec3(uv.x , uv.y, 1.);
+  vec3 color = vec3(uv.x , uv2.y, 1.);
 
   coswarp(color, 3.);
 
-  color.rg = brownConradyDistortion(color.rg, sin(vTime), 10.);
+  // color.rg = brownConradyDistortion(color.rg, sin(vTime), 10.);
 
 
  gl_FragColor = vec4(color, alpha)  ;

@@ -32,7 +32,7 @@ document.querySelector('#birb').addEventListener('click', (e) => {
     const now = Tone.now() + 0.5
     currentMidi.tracks.forEach((track) => {
       //create a synth for each track
-      const synth = new Tone.PolySynth(Tone.FMSynth, {
+      const synth = new Tone.PolySynth(Tone.Synth, {
         envelope: {
           attack: 0.02,
           decay: 0.1,
@@ -329,6 +329,25 @@ floorBody.position.y = -9
 
 world.addBody(floorBody)
 
+window.addEventListener('resize', () =>{
+
+  material.uniforms.uResolution.value.x = renderer.domElement.width
+material.uniforms.uResolution.value.y = renderer.domElement.height
+
+  // Update sizes
+  sizes.width = window.innerWidth
+  sizes.height = window.innerHeight
+
+  // Update camera
+  camera.aspect = sizes.width / sizes.height
+  camera.updateProjectionMatrix()
+
+  // Update renderer
+  renderer.setSize(sizes.width, sizes.height)
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2 ))
+
+
+})
 
 
 
@@ -339,6 +358,11 @@ const clock = new THREE.Clock()
 let oldElapsedTime = 0
 const tick = () =>{
   // if ( mixer ) mixer.update( clock.getDelta() )
+
+  if(material.uniforms.uResolution.value.x === 0 && material.uniforms.uResolution.value.y === 0 ){
+  material.uniforms.uResolution.value.x = renderer.domElement.width
+  material.uniforms.uResolution.value.y = renderer.domElement.height
+}
   const elapsedTime = clock.getElapsedTime()
   material.uniforms.uTime.value = elapsedTime
   const deltaTime = elapsedTime - oldElapsedTime
