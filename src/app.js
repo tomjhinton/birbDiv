@@ -21,8 +21,8 @@ const now = Tone.now()
 const currentMidi = Opening
 const synths = []
 let notPlaying = true
-const freeverb = new Tone.Freeverb().toDestination()
-freeverb.dampening = 500
+// const freeverb = new Tone.Freeverb().toDestination()
+// freeverb.dampening = 500
 const vol = new Tone.Volume(-22).toDestination()
 document.querySelector('#birb').addEventListener('click', (e) => {
 
@@ -41,7 +41,7 @@ document.querySelector('#birb').addEventListener('click', (e) => {
         }
       }).toDestination()
       console.log(synth)
-      synth.connect(freeverb)
+      // synth.connect(freeverb)
       synth.connect(vol)
       synths.push(synth)
       //schedule all of the events
