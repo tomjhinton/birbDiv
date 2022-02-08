@@ -1,0 +1,56 @@
+@font-face {
+  font-family: Art;
+  src: url('../static/Art-Dystopia-2.ttf');
+}
+
+
+
+
+
+@font-face {
+  font-family: Basement;
+  src: url('../static/BasementGrotesque-Black_v1.202.otf');
+}
+
+
+
+
+.title{
+  font-size: 6em;
+  font-family: Basement;
+  // text-align: center;
+  position: absolute;
+  color: rgba(0,0,0,1);
+  // pointer-events: none;
+  top: 5%;
+  left: 5%;
+  // justify-content: center;
+  width: 30%;
+  height: 20px;
+  z-index: 1;
+  cursor: pointer;
+}
+
+#gallery{
+  font-family: Art;
+}
+
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+    opacity: 1;
+}
+
+
+#cuts{
+  font-size: 4em;
+  position: absolute;
+  color: rgba(0,0,0,1);
+  font-family: Basement;
+  text-align: center;
+  // pointer-events: none;
+  height: 10%;
+  width: 10%;
+  top: 5%;
+  left: 85%;
+}
