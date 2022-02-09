@@ -9,6 +9,8 @@ import * as Tone from 'tone'
 import vertexShader from './shaders/vertex.glsl'
 import fragmentShader from './shaders/fragment.glsl'
 
+import fragmentShader2 from './shaders/fragment-2.glsl'
+
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 const canvas = document.querySelector('canvas.webgl')
@@ -108,6 +110,12 @@ const camera = new THREE.PerspectiveCamera(45, sizes.width / sizes.height, .1, 2
 camera.position.x = -.0
 camera.position.y = 0
 camera.position.z = -4
+camera.position.set(
+   -0.000003421258218025903,
+ 3.999999999997427,
+ -0.0000020724362971103135
+
+)
 scene.add(camera)
 
 
@@ -115,7 +123,7 @@ scene.add(camera)
 
 // Controls
 const controls = new OrbitControls(camera, canvas)
-controls.enableDamping = true
+controls.enabled = false
 
 //Stops you looking under the model, because it's never polite to peak under someones model.
 controls.maxPolarAngle = Math.PI / 2 - 0.1
@@ -141,11 +149,13 @@ const cutBlock = (width, height, depth, position) =>{
 
 
 
-  const mesh = new THREE.Mesh(boxGeometry, material)
-  mesh.castShadow = true
-  mesh.position.copy(position)
-  mesh.scale.set(width, height, depth)
-  scene.add(mesh)
+  const mesh2 = new THREE.Mesh(boxGeometry, material2)
+  mesh2.castShadow = true
+  mesh2.position.copy(position)
+  mesh2.scale.set(width, height, depth)
+  scene.add(mesh2)
+  mesh2.rotation.copy(mesh)
+
 
   //Cannon.js Body
   const shape = new CANNON.Box(new CANNON.Vec3(width * 0.5, height * 0.5, depth * 0.5))
@@ -156,12 +166,17 @@ const cutBlock = (width, height, depth, position) =>{
     material: defaultMaterial
   })
   body.position.copy(position)
+  console.log(mesh2)
+  body.quaternion.copy(mesh.quaternion);
+
+
+  // body.rotation.copy(mesh.rotation)
 
 
   world.addBody(body)
 
   objectsToUpdate.push({
-    mesh: mesh,
+    mesh: mesh2,
     body: body
   })
 
@@ -173,7 +188,6 @@ document.querySelector('#gallery').addEventListener('click', (e) => {
 })
 
 
-//Uses the raycaster to find the hidden mesh.
 
 function onClick(event) {
   console.log(camera.position)
@@ -199,8 +213,8 @@ function onClick(event) {
 const invisibleMaterial = new THREE.MeshBasicMaterial({transparent: true, opacity: 0, depthWrite: false})
 
 function splitBox(cuts){
-  console.log(mesh.geometry)
-
+  console.log(mesh.geometry.parameters.width)
+  console.log(camera)
   mesh.material = invisibleMaterial
 
   for(let i = 0; i < cuts; i ++){
@@ -213,7 +227,7 @@ function splitBox(cuts){
 
     // console.log((i/cuts) )
     // console.log('scale ' +mesh.scale.y /cuts)
-    cutBlock(mesh.scale.y /cuts, mesh.scale.y ,mesh.scale.y,
+    cutBlock(mesh.geometry.parameters.width /cuts, mesh.scale.y ,mesh.scale.y,
 
 
 
@@ -266,6 +280,9 @@ const material = new THREE.ShaderMaterial({
     uValueD: {
       value: Math.random()
     },
+    uCuts: {
+      value: 1
+    },
 
     uMouse: {
       value: {x: 0.5, y: 0.5}
@@ -286,6 +303,57 @@ const material = new THREE.ShaderMaterial({
 })
 
 
+const material2 = new THREE.ShaderMaterial({
+  vertexShader: vertexShader,
+  fragmentShader: fragmentShader2,
+  transparent: true,
+  depthWrite: true,
+  clipShadows: true,
+  wireframe: false,
+  side: THREE.DoubleSide,
+  uniforms: {
+    uFrequency: {
+      value: new THREE.Vector2(10, 5)
+    },
+    uTime: {
+      value: 0
+    },
+    uValueA: {
+      value: Math.random()
+    },
+    uValueB: {
+      value: Math.random()
+    },
+    uValueC: {
+      value: Math.random()
+    },
+    uValueD: {
+      value: Math.random()
+    },
+    uCuts: {
+      value: 1
+    },
+
+    uMouse: {
+      value: {x: 0.5, y: 0.5}
+    },
+    uResolution: { type: 'v2', value: new THREE.Vector2() },
+    uPosition: {
+      value: {
+        x: 0
+      }
+    },
+    uRotation: {
+      value: 0
+
+
+
+    }
+  }
+})
+
+
+
 const mesh = new THREE.Mesh(boxGeometry, material)
 
 scene.add(mesh)
@@ -298,7 +366,7 @@ intersectsArr.push(mesh)
 
 world.broadphase = new CANNON.SAPBroadphase(world)
 world.allowSleep = true
-world.gravity.set(0, -2.82, 0)
+world.gravity.set(0, -9.82, 0)
 
 //Materials
 const defaultMaterial = new CANNON.Material('default')
@@ -309,7 +377,7 @@ const defaultContactMaterial = new CANNON.ContactMaterial(
   defaultMaterial,
   {
     friction: 0.2,
-    restitution: 0.7
+    restitution: 0.5
   }
 )
 
@@ -325,7 +393,7 @@ floorBody.quaternion.setFromAxisAngle(
   new CANNON.Vec3(-1, 0, 0),
   Math.PI * 0.5
 )
-floorBody.position.y = -9
+floorBody.position.y = -12
 
 world.addBody(floorBody)
 
@@ -362,9 +430,15 @@ const tick = () =>{
   if(material.uniforms.uResolution.value.x === 0 && material.uniforms.uResolution.value.y === 0 ){
   material.uniforms.uResolution.value.x = renderer.domElement.width
   material.uniforms.uResolution.value.y = renderer.domElement.height
+
+  material2.uniforms.uResolution.value.x = renderer.domElement.width
+  material2.uniforms.uResolution.value.y = renderer.domElement.height
 }
   const elapsedTime = clock.getElapsedTime()
   material.uniforms.uTime.value = elapsedTime
+  material2.uniforms.uTime.value = elapsedTime
+
+  material.uniforms.uCuts.value = document.getElementById('cuts').value
   const deltaTime = elapsedTime - oldElapsedTime
   oldElapsedTime = elapsedTime
   //Update Physics World
@@ -380,7 +454,7 @@ const tick = () =>{
   // Update controls
   controls.update()
 
-
+  mesh.rotation.y += .005
 
   // Render
   renderer.render(scene, camera)

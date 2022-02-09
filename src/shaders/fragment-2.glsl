@@ -425,36 +425,22 @@ void main(){
   float alpha = 1.;
   vec2 uv = (gl_FragCoord.xy - uResolution * .5) / uResolution.yy ;
   vec2 uv2 = vUv;
-
-
   vec2 uv3 = modPolar(uv2 -.5, 8.);
   vec2 rote = rotateUV(uv3, vec2(.5), PI * vTime * .05);
   vec2 roteC = rotateUV(uv3, vec2(.5), -PI * vTime * .05);
 
   float r = stroke(triangleGrid(uv2, 0.05, 0.00005,0.001), .5, .5);
 
-  r = fract(uv2.x * uCuts);
-
-
-  //
-  // float r = stroke(triangleGrid(uv2, 0.05, 0.00005,0.001), .5, .5);
-
   // r = fract(uv2.x * uCuts);
 
-    // uv = modPolar(uv , 60.);
-
   // uv2 = brownConradyDistortion(uv, sin(vTime), cos(vTime));
-  vec3 color = vec3(mix(uv2.x,uv.x * 1.5, .5) , mix(uv2.y, uv.y * 1.5, .5), r);
+  vec3 color = vec3(mix(uv2.x,uv.x * 1.5, .5) , mix(uv2.y, uv.y * 1.5, .5), uv2.x);
 
   coswarp(color, 3.);
-
-  coswarp2(color.rg, 3.);
-
-  // color.rg = brownConradyDistortion(color.rg, sin(vTime * .2), cos(vTime *.2) );
+    coswarp2(color.rg, 3.);
 
     // color+= stroke(cnoise(rote* 12. * cnoise(roteC* 15. )), .5, .5);
-    // color+=r;
-
+  // color.rg = brownConradyDistortion(color.rg, sin(vTime * .2), cos(vTime *.2) );
 
 
 
