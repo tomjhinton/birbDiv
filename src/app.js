@@ -251,7 +251,7 @@ function splitBox(cuts){
 
 const objectsToUpdate = []
 
-const boxGeometry = new THREE.BoxGeometry(1, 1, 1)
+const boxGeometry = new THREE.BoxGeometry(1, 1, 1, 20, 20, 20)
 
 const material = new THREE.ShaderMaterial({
   vertexShader: vertexShader,
