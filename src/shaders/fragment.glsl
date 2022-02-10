@@ -449,9 +449,9 @@ void main(){
   vec3 color = vec3(mix(uv2.x,uv.x * 1.5, uv2.y) , mix(uv2.y, uv.y * 1.5, uv2.y), r);
 
   color = mix(color, color1, uv2.x);
-  coswarp(color, 3. + (uv.x * 4.));
+  coswarp(color, 3. * (uv.x * 4.));
 
-  coswarp2(color.rg, 3. + (uv.y * 4.));
+  coswarp2(color.rg, 3. * (uv.y * 4.));
 
 
 
