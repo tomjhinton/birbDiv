@@ -433,11 +433,18 @@ void main(){
 
   // r = fract(uv2.x * uCuts);
 
-  // uv2 = brownConradyDistortion(uv, sin(vTime), cos(vTime));
-  vec3 color = vec3(mix(uv2.x,uv.x * 1.5, .5) , mix(uv2.y, uv.y * 1.5, .5), uv2.x);
+  vec3 color1 = vec3(1., uv.y, uv.x);
 
-  coswarp(color, 3.);
-    coswarp2(color.rg, 3.);
+  // uv2 = brownConradyDistortion(uv, sin(vTime), cos(vTime));
+  vec3 color = vec3(mix(uv2.x,uv.x * 1.5, uv2.y) , mix(uv2.y, uv.y * 1.5, uv2.y), uv2.x);
+
+  color = mix(color, color1, uv2.x);
+
+  coswarp(color, 3. * (uv.x * 4.));
+
+  coswarp2(color.rg, 3. * (uv.y * 4.));
+
+
 
     // color+= stroke(cnoise(rote* 12. * cnoise(roteC* 15. )), .5, .5);
   // color.rg = brownConradyDistortion(color.rg, sin(vTime * .2), cos(vTime *.2) );
